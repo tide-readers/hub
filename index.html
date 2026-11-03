@@ -1,222 +1,607 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark">
-<title>Tide Readers Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OceanX Research Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #16171B;
-  --card: #2A2B30;
-  --line: #3A3B40;
-  --amber: #E0A13A;
-  --text: #ECECEC;
-  --muted: #8A8B90;
-  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+:root{
+  --paper:#0F1E3D; --surface:#172B52; --ink:#EAF0FA; --muted:#A9B7D0; --line:#2B4472;
+  --teal:#5CC2BE; --teal-soft:#1B3D5C; --coral:#F08A7C; --coral-soft:#3B2A44; --deep:#EAF0FA;
+  --gold:#E2B54E; --gold-soft:#3A3622; --chip:#22396A;
+  --green:#5BC48A; --green-soft:#1A3F45; --on-accent:#0B1730;
+  --sans:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --serif:"Newsreader", Georgia, "Times New Roman", serif;
+  color-scheme: dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
 }
-*, *::before, *::after { box-sizing: border-box; }
-[hidden] { display: none !important; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 17px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+html,body{background:#0F1E3D}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+a{color:var(--teal)}
+img{max-width:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:4px}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:-.01em;font-size:1.05rem;display:flex;align-items:center;gap:10px;margin-right:auto}
+.brand svg{flex:none}
+nav{display:flex;gap:4px;overflow-x:auto}
+nav a{padding:8px 14px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.95rem;white-space:nowrap}
+nav a[aria-current="page"]{background:var(--ink);color:var(--paper)}
+
+main{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+.view{display:none}
+.view.on{display:block}
+
+/* hero */
+.hero{padding:56px 0 40px;position:relative}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.2rem,5.5vw,4rem);line-height:1.05;letter-spacing:-.02em;margin:0 0 20px;max-width:16ch}
+.hero p{font-size:1.15rem;color:var(--muted);max-width:60ch;margin:0}
+.draft{display:inline-block;margin-top:18px;font-size:.85rem;color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:4px 10px}
+
+h2{font-size:1.6rem;letter-spacing:-.015em;margin:0 0 6px;line-height:1.2}
+.sub{color:var(--muted);margin:0 0 24px;max-width:65ch}
+section{padding:40px 0;border-top:1px solid var(--line)}
+
+/* depth gauge */
+.gauge{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px 24px 18px;overflow-x:auto}
+.gauge svg{display:block;min-width:620px;width:100%;height:auto}
+.gauge figcaption{color:var(--muted);font-size:.9rem;margin-top:8px}
+
+/* brief */
+.brief{display:grid;grid-template-columns:1.2fr 1fr;gap:28px}
+.brief blockquote{margin:0;font-family:var(--serif);font-size:1.6rem;line-height:1.25}
+.qlist{margin:0;padding:0;list-style:none}
+.qlist li{padding:12px 0;border-bottom:1px solid var(--line)}
+.qlist li:last-child{border-bottom:0}
+
+/* story list */
+.story{margin:0;padding:0;list-style:none;counter-reset:s}
+.story li{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.story li::before{counter-increment:s;content:counter(s);font-family:var(--serif);font-size:1.6rem;color:var(--teal);line-height:1}
+.story strong{display:block;font-size:1.08rem}
+.story span{color:var(--muted)}
+
+/* process */
+.process{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.process div{padding:16px;border-right:1px solid var(--line)}
+.process div:last-child{border-right:0}
+.process b{display:block}
+.process small{color:var(--muted)}
+.process .now{background:var(--teal-soft)}
+.process .done{opacity:.75}
+
+/* takeaways */
+.big{display:grid;gap:14px}
+.big article{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.big h3{margin:0 0 6px;font-size:1.2rem}
+.big p{margin:0;color:var(--muted)}
+.focus{width:100%;border-collapse:collapse;background:var(--surface);border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.tablewrap{overflow-x:auto}
+.focus th,.focus td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+.focus th{font-size:.85rem;color:var(--muted);font-weight:600}
+.focus tr:last-child td{border-bottom:0}
+.meter{display:inline-flex;gap:3px;vertical-align:middle;margin-right:8px}
+.meter i{width:14px;height:8px;border-radius:2px;background:var(--line)}
+.meter i.f{background:var(--teal)}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cols3 article{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+.cols3 h3{margin:0 0 8px;font-size:1.05rem}
+.cols3 ul{margin:0;padding-left:18px;color:var(--muted)}
+.quad{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:stretch}
+.quad .ax{font-size:.85rem;color:var(--muted);display:flex;align-items:center}
+.quad .q{border-radius:12px;padding:16px}
+.quad .q h4{margin:0 0 4px}
+.quad .q p{margin:0;font-size:.93rem}
+.quad .up{background:var(--teal-soft)}
+.quad .dn{background:var(--coral-soft)}
+.quad .xax{grid-column:2/4;display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+
+/* library */
+.tools{display:flex;flex-direction:column;gap:12px;padding:32px 0 20px}
+.search{width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:1.05rem}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:999px;cursor:pointer;font-size:.9rem;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.count{color:var(--muted);font-size:.9rem}
+.items{display:grid;gap:10px}
+details.item{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+details.item[open]{border-color:var(--teal)}
+details.item summary{list-style:none;cursor:pointer;padding:16px 18px;display:grid;grid-template-columns:1fr auto;gap:4px 16px}
+details.item summary::-webkit-details-marker{display:none}
+.it-title{font-weight:700;font-size:1.05rem}
+.it-sum{grid-column:1/2;color:var(--muted);font-size:.95rem}
+.it-meta{grid-row:1/3;grid-column:2;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.tag{font-size:.78rem;padding:2px 8px;border-radius:6px;background:var(--chip);white-space:nowrap}
+.tag.team{background:var(--gold-soft);color:var(--gold);font-weight:600}
+.tag.conf{background:var(--teal-soft);color:var(--teal)}
+.it-body{padding:0 18px 18px;border-top:1px solid var(--line)}
+.it-body ul{padding-left:20px;margin:14px 0}
+.it-body li{margin:4px 0}
+.it-src{font-size:.88rem;color:var(--muted)}
+.files{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.files a{font-size:.9rem;border:1px solid var(--line);padding:6px 10px;border-radius:8px;text-decoration:none}
+.thumb{max-width:260px;border-radius:8px;border:1px solid var(--line);display:block;margin:10px 0}
+.del{background:none;border:0;color:var(--coral);cursor:pointer;padding:0;font-size:.88rem;text-decoration:underline;margin-top:8px}
+.empty{padding:32px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+.note{font-size:.9rem;color:var(--muted)}
+
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:6;padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--paper) 65%,transparent);display:flex;justify-content:center;pointer-events:none}
+.add{pointer-events:auto;background:var(--teal);color:var(--on-accent);border:0;border-radius:999px;padding:15px 30px;font-weight:700;font-size:1.05rem;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.35);display:flex;align-items:center;gap:10px}
+.add:hover{filter:brightness(1.08)}
+
+/* dialog */
+dialog{border:0;border-radius:16px;padding:0;width:min(600px,calc(100vw - 24px));max-height:calc(100dvh - 40px);background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(8,27,38,.55)}
+.dlg{padding:24px;display:flex;flex-direction:column;gap:14px}
+.dlg h2{margin:0}
+.dlg label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:.95rem}
+.dlg input[type=text],.dlg input[type=url],.dlg select,.dlg textarea{padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);font-weight:400}
+.dlg textarea{min-height:90px;resize:vertical}
+.hint{font-weight:400;color:var(--muted);font-size:.85rem}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);cursor:pointer}
+.drop.over{border-color:var(--teal);background:var(--teal-soft)}
+.picked{display:flex;flex-direction:column;gap:4px;font-size:.9rem}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+.btn{border:1px solid var(--line);background:none;border-radius:999px;padding:10px 20px;font-weight:600;cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.err{color:var(--coral);font-size:.9rem;margin:0}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20}
+.toast.on{opacity:1}
+
+/* recommendation */
+nav a.rec{background:transparent;color:var(--green);border:2px solid var(--green);padding:6px 12px;margin-left:6px}
+nav a.rec[aria-current="page"]{background:var(--green-soft);color:var(--green)}
+.rec-card{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--green);border-radius:14px;padding:24px 26px}
+.rec-card .verdict{font-family:var(--serif);font-size:1.7rem;line-height:1.2;margin:0 0 14px}
+.rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:6px}
+.rec-grid h4{margin:0 0 6px;font-size:.95rem}
+.rec-grid ul{margin:0;padding-left:18px;color:var(--muted)}
+.rec-grid li{margin:4px 0}
+.not{background:var(--coral-soft);border-radius:10px;padding:12px 14px;margin-top:16px;font-size:.93rem}
+.threats{width:100%;border-collapse:collapse;margin-top:16px;min-width:560px}
+.threats th,.threats td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:.93rem}
+.threats th{color:var(--muted);font-weight:600}
+.scale{display:grid;grid-template-columns:minmax(240px,1fr) 1.2fr;gap:24px;align-items:start;margin-top:6px}
+.scale svg{width:100%;height:auto;display:block}
+.opts{display:grid;gap:8px}
+.opt{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.opt b{display:block}
+.opt small{color:var(--muted)}
+.opt.pick{border-color:var(--green);background:var(--green-soft)}
+.opt.next{border-color:var(--green);border-style:dashed}
+.badge{display:inline-block;font-size:.75rem;font-weight:700;background:var(--green);color:var(--on-accent);border-radius:6px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+@media (max-width:760px){.rec-grid,.scale{grid-template-columns:1fr}.rec-card{padding:20px}.rec-card .verdict{font-size:1.4rem}}
+
+/* clickable */
+[data-q],[data-cat]{cursor:pointer;transition:border-color .15s,background-color .15s}
+.big article[data-q]:hover,.cols3 article[data-q]:hover,.gauge[data-q]:hover,.opt[data-q]:hover,.brief[data-cat]:hover{border-color:var(--teal)}
+.brief[data-cat]{border:1px solid transparent;border-radius:14px;padding:6px;margin:-7px}
+.story li[data-q]:hover,.focus tr[data-q]:hover td{background:var(--chip)}
+.story li[data-q]{border-radius:8px;padding-left:8px;padding-right:8px}
+.quad[data-cat] .q:hover{outline:2px solid var(--teal)}
+.evid{float:right;margin:0 0 10px 14px;background:none;border:1px solid var(--teal);color:var(--teal);border-radius:999px;padding:6px 14px;font-weight:600;cursor:pointer;font-size:.9rem}
+.evid:hover{background:var(--teal-soft)}
+.hintline{font-size:.85rem;color:var(--muted);margin:-14px 0 20px}
+@media (max-width:760px){.evid{float:none;margin:0 0 12px}}
+
+@media (max-width:760px){
+  .brief,.cols3{grid-template-columns:1fr}
+  .process{grid-template-columns:1fr 1fr}
+  .process div:nth-child(2){border-right:0}
+  .process div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .quad{grid-template-columns:1fr 1fr}
+  .quad .ax{display:none}
+  .quad .xax{grid-column:1/3}
+  details.item summary{grid-template-columns:1fr}
+  .it-meta{grid-row:auto;grid-column:1;flex-direction:row;align-items:center;flex-wrap:wrap}
+  .hero{padding:36px 0 28px}
 }
-.wrap { max-width: 792px; margin: 0 auto; padding: 32px 16px 72px; }
-
-/* top bar */
-.top { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 20px; margin-bottom: 48px; }
-.meta { margin: 0; color: var(--muted); font-size: .9rem; }
-.edit {
-  margin-left: auto;
-  display: inline-block;
-  background: var(--amber);
-  color: var(--bg);
-  font-weight: 700;
-  font-size: .95rem;
-  text-decoration: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  white-space: nowrap;
-}
-.edit:hover { filter: brightness(1.08); }
-.edit:focus-visible, a:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
-
-/* rendered markdown */
-#content { overflow-wrap: break-word; }
-#content > h1:first-child { margin-top: 0; }
-h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.2; letter-spacing: -.01em; margin: 1.6em 0 .5em; }
-h1 { font-size: clamp(2rem, 6vw, 2.75rem); font-weight: 800; letter-spacing: -.025em; margin-bottom: .4em; }
-h2 { font-size: 1.45rem; }
-h3 { font-size: 1.15rem; }
-h4, h5, h6 { font-size: 1rem; }
-p, ul, ol, blockquote, pre, .table-wrap { margin: 0 0 1em; }
-ul, ol { padding-left: 1.4em; }
-li + li { margin-top: .3em; }
-li > ul, li > ol { margin: .3em 0 0; }
-li::marker { color: var(--muted); }
-a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 3px; }
-a:hover { text-decoration-thickness: 2px; }
-strong { font-weight: 700; }
-hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
-img { max-width: 100%; height: auto; border-radius: 8px; }
-blockquote { padding: .1em 0 .1em 1em; border-left: 3px solid var(--amber); }
-code { font-family: var(--mono); font-size: .88em; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: .1em .35em; }
-pre { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; overflow-x: auto; }
-pre code { background: none; border: 0; padding: 0; font-size: .88rem; }
-
-/* task lists */
-li:has(> input[type="checkbox"]),
-li:has(> p:first-child > input[type="checkbox"]:first-child) { list-style: none; margin-left: -1.4em; }
-input[type="checkbox"] {
-  -webkit-appearance: none;
-  appearance: none;
-  display: inline-block;
-  width: 1.05em;
-  height: 1.05em;
-  margin: 0 .55em 0 0;
-  vertical-align: -.17em;
-  border: 2px solid var(--amber);
-  border-radius: 4px;
-  background: transparent;
-  opacity: 1;
-}
-input[type="checkbox"]:checked {
-  background: var(--amber) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%2316171B' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat;
-}
-
-/* tables */
-.table-wrap { overflow-x: auto; }
-table { border-collapse: collapse; width: 100%; font-size: .95rem; }
-th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
-th { color: var(--muted); font-weight: 700; font-size: .85rem; }
-tr:last-child td { border-bottom: 0; }
-th:first-child, td:first-child { padding-left: 0; }
-th:last-child, td:last-child { padding-right: 0; }
-
-/* each ## section becomes a card */
-.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 28px; margin-top: 20px; }
-.card > h2:first-child { margin-top: 0; }
-.card > :last-child { margin-bottom: 0; }
-.lead { color: var(--muted); }
-
-.foot { margin-top: 48px; color: var(--muted); font-size: .9rem; }
-.foot a { color: var(--muted); }
-
-@media (max-width: 600px) {
-  body { font-size: 16px; }
-  .wrap { padding-top: 20px; }
-  .top { margin-bottom: 32px; }
-  .card { padding: 20px 18px; border-radius: 12px; }
-}
+/* hub.md library */
+a.add{text-decoration:none}
+.it-body p{margin:14px 0}
+.it-body code{font-size:.9em;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+.it-body input[type=checkbox]{accent-color:var(--teal);margin:0 8px 0 0;vertical-align:-2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <p class="meta" id="edited" hidden></p>
-    <a class="edit" href="https://github.com/tide-readers/hub/edit/main/hub.md">Edit this page</a>
-  </header>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M2 9c4-3 7 3 11 0s7-3 11 0M2 15c4-3 7 3 11 0s7-3 11 0M2 21c4-3 7 3 11 0s7-3 11 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      OceanX Research Hub
+    </div>
+    <nav aria-label="Sections">
+      <a href="#overview" data-v="overview">Overview</a>
+      <a href="#takeaways" data-v="takeaways">Key takeaways</a>
+      <a href="#library" data-v="library">Research library</a>
+      <a href="#recommendation" data-v="recommendation" class="rec">Recommendation</a>
+    </nav>
+  </div>
+</header>
 
-  <main id="content">
-    <p class="lead">Loading…</p>
-    <noscript><p>This page needs JavaScript to show the hub.</p></noscript>
-  </main>
+<main>
+<!-- OVERVIEW -->
+<div class="view" id="v-overview">
+  <div class="hero">
+    <h1>How might our relationship with the ocean change by 2040?</h1>
+    <p>Everything the cohort has gathered on the OceanX brief in one place: the brief, the as-is state of OceanX Education, the evidence, and first sketches of 2040. Browse the library for the evidence behind each point.</p>
+    <span class="draft">Phase 1 research, 21 October 2026. Draft for team discussion, not yet validated by the client.</span>
+  </div>
 
-  <footer class="foot">
-    <a href="https://github.com/tide-readers/hub#readme">How to edit</a> ·
-    <a href="https://github.com/tide-readers/hub/commits/main/hub.md">Past edits</a>
-  </footer>
+  <section>
+    <h2>The brief</h2>
+    <p class="sub">From OceanX Education, Hyper Island Future Scenarios module.</p>
+    <div class="brief" data-cat="The brief">
+      <blockquote>How might our relationship with the ocean change by 2040, and what could that mean for education?</blockquote>
+      <ul class="qlist">
+        <li>What might our relationship with the ocean look and feel like in 2040?</li>
+        <li>What might shape or disrupt that relationship?</li>
+        <li>What could an immersive educational experience look like in that future?</li>
+        <li><b>Success:</b> a future world brought to life through artefacts or prototypes you can test and get feedback on, with evidence that learning contributes to ocean impact, at scale in both reach and depth.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>One ship, very deep, mostly unexplored</h2>
+    <p class="sub">The OceanXplorer is lab, studio and classroom at once. Its reach goes far below what we know: less than 5% of the ocean has been directly explored, and 28.7% of the seafloor is mapped.</p>
+    <figure class="gauge" style="margin:0" data-q="OceanXplorer">
+      <svg viewBox="0 0 900 230" role="img" aria-label="Depth scale: vessel length 87 metres, submersibles dive to 1,000 metres, ROV to 6,000 metres, 72 people aboard">
+        <defs>
+          <linearGradient id="sea" x1="0" x2="1"><stop offset="0" stop-color="var(--teal-soft)"/><stop offset="1" stop-color="var(--teal)"/></linearGradient>
+        </defs>
+        <rect x="20" y="70" width="860" height="22" rx="11" fill="url(#sea)"/>
+        <g font-family="Schibsted Grotesk, Arial, sans-serif" fill="currentColor">
+          <line x1="33" y1="58" x2="33" y2="104" stroke="currentColor" stroke-width="2"/>
+          <text x="20" y="40" font-size="30" font-weight="700">87 m</text>
+          <text x="20" y="130" font-size="14" opacity=".7">Ship length</text>
+          <line x1="163" y1="58" x2="163" y2="104" stroke="currentColor" stroke-width="2"/>
+          <text x="150" y="40" font-size="30" font-weight="700">1,000 m</text>
+          <text x="150" y="130" font-size="14" opacity=".7">Two Triton subs,</text>
+          <text x="150" y="148" font-size="14" opacity=".7">Neptune and Nadir</text>
+          <line x1="866" y1="58" x2="866" y2="104" stroke="currentColor" stroke-width="2"/>
+          <text x="880" y="40" font-size="30" font-weight="700" text-anchor="end">6,000 m</text>
+          <text x="880" y="130" font-size="14" opacity=".7" text-anchor="end">Argus ROV depth rating</text>
+          <text x="480" y="40" font-size="30" font-weight="700" text-anchor="middle">72 aboard</text>
+          <text x="480" y="130" font-size="14" opacity=".7" text-anchor="middle">Maximum capacity, about 15 per hackathon</text>
+          <text x="20" y="205" font-size="14" opacity=".7">Depth scale, linear. Most of the audience never reaches the ship.</text>
+        </g>
+      </svg>
+    </figure>
+  </section>
+
+  <section>
+    <h2>The story in one page</h2>
+    <p class="sub">All three team decks agree on this picture.</p>
+    <ol class="story">
+      <li data-q="Dalio"><div><strong>OceanX is a founder-led nonprofit operating program of Dalio Philanthropies.</strong><span>One ship is lab, studio and classroom, and its footage reaches millions through partner series.</span></div></li>
+      <li data-q="pathway"><div><strong>OceanX Education turns that science and footage into pathways for young people.</strong><span>Ship immersions, hackathons, a fellowship and school access, with its base in Singapore.</span></div></li>
+      <li data-q="72"><div><strong>Depth is high but cohorts are small; scale comes through partners and media.</strong><span>Capacity is up to 72 aboard and about 15 per hackathon.</span></div></li>
+      <li data-q="protected"><div><strong>The ocean outlook is worsening faster than governance is delivering.</strong><span>Record heat, 10% designated but about 3.3% effectively protected, deep-sea mining moving toward permits.</span></div></li>
+      <li data-q="outputs"><div><strong>The sector counts participation; almost none proves behaviour change.</strong><span>That includes OceanX, which reports counts and firsts, not outcomes.</span></div></li>
+    </ol>
+  </section>
+
 </div>
+
+<!-- TAKEAWAYS -->
+<div class="view" id="v-takeaways">
+  <div class="hero">
+    <h1>What we know so far</h1>
+    <p>The short version of the research. Click any point to see the evidence behind it in the library.</p>
+  </div>
+
+  <section>
+    <h2>Three insights</h2>
+    <p class="sub">From the Phase 2 problem framing.</p>
+    <div class="big">
+      <article data-q="partners"><h3>The ship and the partners are both the strength and the constraint.</h3><p>Depth lives on one vessel; access, data and distribution depend on coastal states, funders and broadcasters.</p></article>
+      <article data-q="outcome"><h3>Everything reported counts activity, not effect.</h3><p>570+ aboard, 1,610 tour visitors, 100,000+ via livestreams: none of these measure learning or behaviour. No outcome evaluation was found.</p></article>
+      <article data-q="audience"><h3>Who the audience is stays unsettled, and that affects every problem.</h3><p>Stated 18–24 and 25+, described as 18–25/26, in practice high school to PhD. No needs research exists.</p></article>
+    </div>
+  </section>
+
+  <section>
+    <h2>Five focus areas</h2>
+    <p class="sub">Emerging from all three decks. Areas 2, 3 and 5 hold in all four 2040 futures, so they’re the safest to prioritise.</p>
+    <div class="tablewrap">
+    <table class="focus">
+      <thead><tr><th>Focus area</th><th>Why</th><th>Bet it rests on</th><th>Confidence</th></tr></thead>
+      <tbody>
+        <tr data-q="audience"><td><b>1. Sharpen who and what it is for</b></td><td>Most of the target audience never reaches the ship; audience bands conflict.</td><td>The brief-giver’s 18–25/26 priority holds.</td><td><span class="meter"><i class="f"></i><i class="f"></i><i class="f"></i><i></i></span>Medium-High</td></tr>
+        <tr data-q="wonder"><td><b>2. From wonder to responsibility</b></td><td>Awe isn’t turned into action. Responsibility predicts behaviour better than literacy.</td><td>The evidence generalises beyond one survey.</td><td><span class="meter"><i class="f"></i><i class="f"></i><i></i><i></i></span>Low-Medium</td></tr>
+        <tr data-q="continue"><td><b>3. Prove it, then scale it</b></td><td>OceanX can’t show its education works; the pathway ends at “Continue”.</td><td>Outcome data is absent, not just unpublished.</td><td><span class="meter"><i class="f"></i><i class="f"></i><i class="f"></i><i></i></span>Medium-High</td></tr>
+        <tr data-q="threats"><td><b>4. Connect threats to action</b></td><td>Threat choices follow science strengths, not what learners can act on.</td><td>Learner action can be rated meaningfully.</td><td><span class="meter"><i class="f"></i><i class="f"></i><i></i><i></i></span>Medium</td></tr>
+        <tr data-q="seaswipe"><td><b>5. Extend beyond the ship</b></td><td>Ship-based depth can’t reach most people; citizen science is set to grow.</td><td>Digital extension keeps the depth that matters.</td><td><span class="meter"><i class="f"></i><i class="f"></i><i></i><i></i></span>Medium</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="note" style="margin-top:10px">Constraint, not a focus: access and data depend on coastal states and partners. It shapes every option.</p>
+  </section>
+
+  <section>
+    <h2>Four futures for 2040</h2>
+    <p class="sub">Two critical uncertainties: does governance deliver, and does learning turn into action? Sketches, not predictions.</p>
+    <div class="quad" data-cat="2040 futures">
+      <div class="ax">Action gap closes</div>
+      <div class="q up"><h4>People ahead of policy</h4><p>Governance lags, action gap closes. Local, tangible action leads while rules trail.</p></div>
+      <div class="q up"><h4>Shared stewardship</h4><p>Governance delivers, action gap closes. Rules and public action reinforce each other.</p></div>
+      <div class="ax">Action gap persists</div>
+      <div class="q dn"><h4>Drift</h4><p>Governance lags, action gap persists. Threats compound while attention scatters.</p></div>
+      <div class="q dn"><h4>Rules without people</h4><p>Governance delivers, action gap persists. Protection exists on paper; buy-in and enforcement lag.</p></div>
+      <div class="xax"><span>Governance lags</span><span>Governance delivers</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Three decisions for the team</h2>
+    <p class="sub">Vote on the level first, then the audience, then pick 2–3 focus areas that fit.</p>
+    <div class="cols3">
+      <article data-q="policy"><h3>At what level do we aim?</h3><ul><li>Political: policy and government influence</li><li>Public: Gen Z and broader public education</li><li>OceanX: its own evolution, partnerships, platform</li><li>Trying all three at once risks drift</li></ul></article>
+      <article data-q="audience"><h3>Who is the audience?</h3><ul><li>Gen Z academic: matches stated eligibility; clearer pathway, smaller scale</li><li>General public: matches the media route; far less evidence of behaviour change</li></ul></article>
+      <article data-q="media"><h3>Education or entertainment?</h3><ul><li>Education leans on depth, pathway and proof (areas 1, 3)</li><li>Entertainment leans on reach and media, where OceanX relies on partners (areas 2, 5)</li></ul></article>
+    </div>
+  </section>
+</div>
+
+<!-- RECOMMENDATION -->
+<div class="view" id="v-recommendation">
+  <div class="hero">
+    <h1>Our recommendation</h1>
+    <p>Three answers the team needs before moving into futures and prototypes: who we design for, which threats we focus on, and at what scale.</p>
+    <span class="draft">Draft based on Phase 1 evidence. For the team vote, not yet validated by the client.</span>
+  </div>
+
+  <section>
+    <h2>1. Who is the best target audience?</h2>
+    <p class="sub">Answers decision 2, “Who is the audience?”, and focus area 1.</p>
+    <div class="rec-card">
+      <button class="evid" type="button" data-q="audience">See the evidence</button>
+      <p class="verdict">Young adults aged 18–25 in Asia-Pacific who aren’t yet in ocean careers, with educators as multipliers.</p>
+      <div class="rec-grid">
+        <div><h4>Why</h4><ul>
+          <li>Matches the stated eligibility and the brief-giver’s priority (about 18–25/26), so it fits what OceanX already runs.</li>
+          <li>They’ll be 32–39 in 2040: the professionals, parents and decision-makers of that future.</li>
+          <li>The Singapore hub, booklets in Bahasa Indonesia and ministry partners (MoE, DepEd) already point to Asia-Pacific.</li>
+          <li>Today’s programmes mostly reach young adults who already care. The bigger gain is students from design, tech, business and policy who don’t yet see an ocean role for themselves.</li>
+          <li>Educators carry learning into classrooms far beyond the 72 places aboard.</li>
+        </ul></div>
+        <div><h4>What to check</h4><ul>
+          <li>Applicant and participant data: are most applicants already engaged?</li>
+          <li>A short survey or five interviews with 18–25s outside marine science.</li>
+          <li>Whether OceanX wants school age or corporates included.</li>
+        </ul></div>
+      </div>
+      <div class="not"><b>Not the general public as the primary audience.</b> Media reach is large, but the evidence that it changes behaviour is the weakest (Blue Planet II raised intent, not real choices). Policymakers need different messaging, and nothing shows OceanX influencing policy yet.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. What are the primary threats, and how do we address them?</h2>
+    <p class="sub">Answers focus area 4: pick threats by where learners can act, not only where the science is strongest.</p>
+    <div class="rec-card">
+      <button class="evid" type="button" data-q="plastic">See the evidence</button>
+      <p class="verdict">Pair one everyday threat with one voice threat: plastic pollution, and the gap between protection on paper and protection in practice, including the deep sea.</p>
+      <div class="tablewrap">
+      <table class="threats">
+        <thead><tr><th>Threat</th><th>Why it’s primary</th><th>How learners act</th><th>How to address it</th></tr></thead>
+        <tbody>
+          <tr><td><b>Plastic pollution</b></td><td>130 Mt now, 280 Mt by 2040 if unchanged, 47 Mt with system change. 10 of the top 20 emitting countries are in Asia.</td><td>Everyday choices, local action</td><td>Give the learner a role and a local, tangible action, then measure what they actually do, not what they intend.</td></tr>
+          <tr><td><b>Protection gap and deep sea</b></td><td>10% designated but about 3.3% effectively protected. Mining rules deferred to March 2027. This is where OceanX’s science is unique: seamounts, mapping, digital twins, high seas.</td><td>Voice and advocacy</td><td>Pair each discovery with follow-through: show what was found, what protects it, and what the learner can push for.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="rec-grid" style="margin-top:18px">
+        <div><h4>The approach behind both</h4><ul>
+          <li>Move from wonder to responsibility: responsibility predicts action better than knowledge (0.51 vs 0.39).</li>
+          <li>Use local, concrete actions instead of overwhelming statistics; 3 in 4 young people already find the future frightening.</li>
+          <li>Warming and heatwaves stay as context: the strongest driver, but the hardest for one learner to act on.</li>
+        </ul></div>
+        <div><h4>What to check</h4><ul>
+          <li>Acidification in Asia: the team named it, but no deck evidences its regional severity.</li>
+          <li>The responsibility finding comes from one survey in one country; test it with our own audience.</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. At what scale do we address these threats?</h2>
+    <p class="sub">Answers the team vote “Which scale do we go for?”</p>
+    <div class="rec-card">
+      <button class="evid" type="button" data-q="outputs">See the evidence</button>
+      <p class="verdict">Prove it first, then build toward deep at scale.</p>
+      <div class="scale">
+        <svg viewBox="0 0 300 260" role="img" aria-label="Depth and reach matrix: start at D, prove it first, then move to C, deep at scale">
+          <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--green)"/></marker></defs>
+          <g font-family="Schibsted Grotesk, Arial, sans-serif" fill="currentColor">
+            <line x1="30" y1="10" x2="30" y2="220" stroke="var(--line)" stroke-width="2"/>
+            <line x1="30" y1="220" x2="290" y2="220" stroke="var(--line)" stroke-width="2"/>
+            <line x1="160" y1="10" x2="160" y2="220" stroke="var(--line)" stroke-dasharray="4 4"/>
+            <line x1="30" y1="115" x2="290" y2="115" stroke="var(--line)" stroke-dasharray="4 4"/>
+            <rect x="163" y="13" width="124" height="99" rx="8" fill="var(--green-soft)" stroke="var(--green)" stroke-dasharray="5 4"/>
+            <text x="16" y="120" font-size="12" opacity=".7" transform="rotate(-90 16 120)" text-anchor="middle">Depth</text>
+            <text x="160" y="245" font-size="12" opacity=".7" text-anchor="middle">Reach</text>
+            <circle cx="90" cy="60" r="18" fill="none" stroke="currentColor" opacity=".5"/><text x="90" y="65" font-size="14" text-anchor="middle" opacity=".6">A</text>
+            <circle cx="225" cy="170" r="18" fill="none" stroke="currentColor" opacity=".5"/><text x="225" y="175" font-size="14" text-anchor="middle" opacity=".6">B</text>
+            <circle cx="225" cy="55" r="20" fill="var(--green)"/><text x="225" y="61" font-size="15" font-weight="700" text-anchor="middle" fill="#0B1730">C</text>
+            <circle cx="105" cy="165" r="20" fill="var(--green)"/><text x="105" y="171" font-size="15" font-weight="700" text-anchor="middle" fill="#0B1730">D</text>
+            <path d="M122 152 Q 175 130 207 72" fill="none" stroke="var(--green)" stroke-width="2.5" marker-end="url(#arr)"/>
+            <text x="225" y="100" font-size="11" text-anchor="middle" fill="var(--green)">empty today</text>
+          </g>
+        </svg>
+        <div class="opts">
+          <div class="opt pick" data-q="continue"><b>D: Prove it first <span class="badge">Start here</span></b><small>Measure what changes before scaling. Define the step after “Continue” and pick one outcome measure, such as a real action taken three months later.</small></div>
+          <div class="opt next" data-q="seaswipe"><b>C: Deep at scale <span class="badge">Then grow</span></b><small>Bring the ship to many through livestreams, SeaSwipe, the digital twin and the Immersive Development Toolkit, using what D proved works.</small></div>
+          <div class="opt" data-q="72"><b>A: Go deep</b><small>Not alone: 72 places aboard and about 15 per hackathon can’t reach the audience.</small></div>
+          <div class="opt" data-q="media"><b>B: Go wide</b><small>Not alone: reach through partner media hasn’t been shown to change behaviour.</small></div>
+        </div>
+      </div>
+      <div class="rec-grid" style="margin-top:18px">
+        <div><h4>Why</h4><ul>
+          <li>Nothing is deep at scale today, so C is the real opening. Jumping there without proof repeats the sector’s habit of counting activity.</li>
+          <li>Proof and digital extension (focus areas 3 and 5) hold in all four 2040 futures, so this is a no-regret move.</li>
+          <li>Evidence of impact is exactly what the brief asks for, and what funders, ministries and partners will want.</li>
+        </ul></div>
+        <div><h4>What it means for the prototype</h4><ul>
+          <li>One immersive experience for 18–25s that reaches beyond the ship.</li>
+          <li>Built around plastic and the protection gap, with a role for the learner.</li>
+          <li>Tested with a before-and-after measure of what people actually do.</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- LIBRARY -->
+<div class="view" id="v-library">
+  <div class="tools">
+    <input class="search" id="q" type="search" placeholder="Search the research, e.g. plastic, hackathon, 2040" aria-label="Search the research">
+    <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+    <div class="count" id="count" aria-live="polite"></div>
+    <p class="note" id="edited" style="margin:0" hidden></p>
+  </div>
+  <div class="items" id="items"></div>
+</div>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+<div class="bar"><a class="add" href="https://github.com/tide-readers/hub/edit/main/hub.md">Edit the library</a></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/18.1.1/lib/marked.umd.min.js" integrity="sha512-TR+1uszv8n9bFfC+4wouvHv2Na21prfppUEcxR62hf7+e4AZpz1l726rHEk5Zhpg6uJWUJ+LhN+hVqL99YCZqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.4.17/purify.min.js" integrity="sha512-2wT0W6vojz3cJuLoa/DxrPVQRinkfRjFWMWIDK4NghTqObEhpem1nEkeK0d9ZE+/hyvfMNuJZlfxM4LsRgeoSA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-const REPO = "tide-readers/hub";
-const content = document.getElementById("content");
+const CATS = ["The brief","OceanX","Ship and tools","Education","Ecosystem","Evidence","Ocean outlook","2040 futures","Problems and gaps"];
+const REPO="tide-readers/hub";
 
-// Wrap everything from one h2 up to the next in a card.
-function makeCards(root) {
-  let card = null;
-  for (const node of [...root.childNodes]) {
-    if (node.nodeName === "H2") {
-      card = document.createElement("section");
-      card.className = "card";
-      root.insertBefore(card, node);
-    }
-    if (card) card.appendChild(node);
+/* ---------- library data, read from hub.md ---------- */
+// "## Topic" starts a topic, "### Title" an entry. Under an entry: a summary paragraph,
+// bullet points, then "Source:", "Confidence:", "Link:" and "Added by:" lines.
+let CORE=[]; let libState="loading"; let pendingOpen=false;
+const META=/^(Source|Link|Confidence|Added by)\s*:\s*(.*)$/i;
+function parseLibrary(md){
+  const items=[]; let cat=null, it=null;
+  const meta=line=>{const m=META.exec(line.trim());if(!m)return false;const k=m[1].toLowerCase(),v=m[2].trim();
+    if(k==="source")it.src=v;else if(k==="link")it.links.push(v);else if(k==="confidence")it.conf=v;else it.by=v;return true};
+  for(const t of marked.lexer(md)){
+    if(t.type==="heading"&&t.depth<=2){cat=t.depth===2?t.text.trim():null;it=null;continue}
+    if(t.type==="heading"&&t.depth===3){it=cat?{cat,title:t.text.trim(),sum:"",pts:[],notes:[],links:[],src:"",conf:"",by:""}:null;if(it)items.push(it);continue}
+    if(!it)continue;
+    if(t.type==="paragraph"){const text=t.text.split("\n").filter(l=>!meta(l)).join(" ").trim();if(!text)continue;if(!it.sum&&!it.pts.length)it.sum=text;else it.notes.push(text)}
+    else if(t.type==="list"){for(const li of t.items){const[first,...rest]=li.text.split("\n");const text=[first,...rest.filter(l=>!meta(l))].join(" ").trim();if(text)it.pts.push({text,task:li.task,checked:li.checked})}}
   }
+  return items;
+}
+function inline(s){const t=document.createElement("template");t.innerHTML=DOMPurify.sanitize(marked.parseInline(s||""));t.content.querySelectorAll("a").forEach(a=>{a.target="_blank";a.rel="noopener"});t.content.querySelectorAll("img").forEach(i=>i.classList.add("thumb"));return t.content}
+function linkUrl(v){const m=/https?:\/\/[^\s<>()\[\]]+/.exec(v);return m&&safeUrl(m[0])}
+
+/* ---------- helpers ---------- */
+const $ = s=>document.querySelector(s);
+function el(tag, props={}, ...kids){const e=document.createElement(tag);for(const[k,v]of Object.entries(props)){if(k==="class")e.className=v;else if(k==="text")e.textContent=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v)}for(const k of kids){if(k!=null)e.append(k)}return e}
+function toast(t){const x=$("#toast");x.textContent=t;x.classList.add("on");clearTimeout(x._t);x._t=setTimeout(()=>x.classList.remove("on"),2600)}
+function safeUrl(u){try{const x=new URL(u);return (x.protocol==="https:"||x.protocol==="http:")?x.href:null}catch{return null}}
+
+/* ---------- routing ---------- */
+const VIEWS=["overview","takeaways","library","recommendation"];
+function route(){const h=location.hash.slice(1);const v=VIEWS.includes(h)?h:"overview";VIEWS.forEach(n=>{$("#v-"+n).classList.toggle("on",n===v)});document.querySelectorAll("nav a").forEach(a=>{a.toggleAttribute("aria-current",a.dataset.v===v);if(a.dataset.v===v)a.setAttribute("aria-current","page")});}
+addEventListener("hashchange",()=>{route();scrollTo(0,0)});
+route();
+
+/* ---------- library ---------- */
+let filter="All"; let query="";
+let chipNames=["All",...CATS];
+// Known topics keep their original order; new topics from hub.md follow.
+function setChips(){const used=[...new Set(CORE.map(c=>c.cat))];chipNames=["All",...CATS.filter(c=>used.includes(c)),...used.filter(c=>!CATS.includes(c))];if(!chipNames.includes(filter))filter="All"}
+function renderChips(){const c=$("#chips");c.replaceChildren(...chipNames.map(n=>el("button",{class:"chip",type:"button","aria-pressed":String(n===filter),onclick:()=>{filter=n;renderChips();renderItems()}},n)))}
+function matches(it){
+  if(filter!=="All"&&it.cat!==filter)return false;
+  if(!query)return true;
+  const hay=[it.title,it.sum,it.pts.map(p=>p.text).join(" "),it.notes.join(" "),it.cat,it.src,it.by].join(" ").toLowerCase();
+  return query.toLowerCase().split(/\s+/).every(w=>hay.includes(w));
+}
+function itemNode(it){
+  const meta=el("div",{class:"it-meta"});
+  meta.append(el("span",{class:"tag",text:it.cat}));
+  if(it.conf)meta.append(el("span",{class:"tag conf",text:it.conf}));
+  if(it.by)meta.append(el("span",{class:"tag team",text:it.by}));
+  const sum=el("summary",{},el("span",{class:"it-title"},inline(it.title)),meta,el("span",{class:"it-sum"},inline(it.sum)));
+  const body=el("div",{class:"it-body"});
+  if(it.pts.length){const ul=el("ul");it.pts.forEach(p=>ul.append(el("li",{},p.task?el("input",p.checked?{type:"checkbox",disabled:"",checked:""}:{type:"checkbox",disabled:""}):null,inline(p.text))));body.append(ul)}
+  it.notes.forEach(n=>body.append(el("p",{},inline(n))));
+  const src=el("div",{class:"it-src"});
+  if(it.src)src.append("Source: "+it.src);
+  it.links.map(linkUrl).filter(Boolean).forEach((lk,i)=>src.append(i?" · ":(it.src?" — ":""),el("a",{href:lk,target:"_blank",rel:"noopener",text:"Open link"})));
+  body.append(src);
+  return el("details",{class:"item"},sum,body);
+}
+function renderItems(){
+  const box=$("#items");
+  if(libState!=="ready"){$("#count").textContent="";box.replaceChildren(el("div",{class:"empty",text:libState==="loading"?"Loading the library…":"The library didn’t load. Check your connection and refresh in a minute. If it keeps happening, post in Slack."}));return}
+  const all=CORE.filter(matches);
+  $("#count").textContent=all.length+(all.length===1?" entry":" entries");
+  if(!all.length){box.replaceChildren(el("div",{class:"empty",text:"No entries match. Try another word or topic."}));return}
+  box.replaceChildren(...all.map(itemNode));
+}
+async function loadLibrary(){
+  try{
+    const res=await fetch("hub.md",{cache:"no-cache"});
+    if(!res.ok)throw new Error("hub.md returned "+res.status);
+    CORE=parseLibrary(await res.text());
+    CORE.forEach((c,i)=>c.id="core"+i);
+    libState="ready";
+  }catch(err){console.error(err);libState="failed"}
+  setChips();renderChips();renderItems();
+  if(pendingOpen){pendingOpen=false;const d=$("#items details");if(d)d.open=true}
 }
 
-// Let wide tables scroll sideways instead of the whole page.
-function wrapTables(root) {
-  for (const table of root.querySelectorAll("table")) {
-    const wrap = document.createElement("div");
-    wrap.className = "table-wrap";
-    table.before(wrap);
-    wrap.appendChild(table);
-  }
+/* ---------- last edit, from the GitHub API (stays hidden if that fails) ---------- */
+function timeAgo(d){const s=Math.round((Date.now()-d)/1000);for(const[u,n]of[["year",31536000],["month",2592000],["week",604800],["day",86400],["hour",3600],["minute",60]])if(s>=n){const v=Math.floor(s/n);return v+" "+u+(v===1?"":"s")+" ago"}return "just now"}
+async function loadLastEdit(){
+  try{
+    const res=await fetch("https://api.github.com/repos/"+REPO+"/commits?path=hub.md&per_page=1",{cache:"no-cache"});
+    if(!res.ok)return;
+    const[c]=await res.json();
+    const name=c&&(c.commit.author.name||(c.author&&c.author.login)), when=c&&new Date(c.commit.committer.date);
+    if(!name||!when||isNaN(when))return;
+    const x=$("#edited");x.textContent="Last edited by "+name+", "+timeAgo(when);x.title=when.toLocaleString();x.hidden=false;
+  }catch{}
 }
+$("#q").addEventListener("input",e=>{query=e.target.value.trim();renderItems()});
+renderChips();renderItems();loadLibrary();loadLastEdit();
 
-async function loadHub() {
-  try {
-    const res = await fetch("hub.md", { cache: "no-cache" });
-    if (!res.ok) throw new Error("hub.md returned " + res.status);
-    const md = await res.text();
-    content.innerHTML = DOMPurify.sanitize(marked.parse(md, { gfm: true }));
-    wrapTables(content);
-    makeCards(content);
-    const h1 = content.querySelector("h1");
-    if (h1 && h1.textContent.trim()) document.title = h1.textContent.trim();
-  } catch (err) {
-    console.error(err);
-    content.innerHTML =
-      '<section class="card"><h2>The page didn’t load</h2>' +
-      "<p>Something went wrong while fetching the hub. Check your connection and refresh in a minute.</p>" +
-      "<p>If it keeps happening, post in Slack so we can take a look.</p></section>";
-  }
+/* ---------- click-through to evidence ---------- */
+function goLib(q,cat){
+  query=q||"";filter=cat||"All";$("#q").value=query;renderChips();renderItems();
+  if(location.hash!=="#library"){location.hash="library"}else{scrollTo(0,0)}
+  if(libState==="loading")pendingOpen=true;
+  requestAnimationFrame(()=>{const d=$("#items details");if(d)d.open=true});
 }
+document.querySelectorAll("[data-q]:not(button),[data-cat]").forEach(n=>{n.setAttribute("tabindex","0");n.setAttribute("role","link");n.setAttribute("title","See the evidence in the library")});
+document.addEventListener("click",e=>{
+  if(e.target.closest("a,input,select,textarea,dialog,summary,.del"))return;
+  const t=e.target.closest("[data-q],[data-cat]");if(!t)return;
+  goLib(t.dataset.q,t.dataset.cat);
+});
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  const t=e.target.closest&&e.target.closest("[data-q]:not(button),[data-cat]");if(!t||e.target!==t)return;
+  e.preventDefault();goLib(t.dataset.q,t.dataset.cat);
+});
 
-function timeAgo(date) {
-  const seconds = Math.round((Date.now() - date.getTime()) / 1000);
-  const units = [["year", 31536000], ["month", 2592000], ["week", 604800], ["day", 86400], ["hour", 3600], ["minute", 60]];
-  for (const [unit, size] of units) {
-    if (seconds >= size) {
-      const n = Math.floor(seconds / size);
-      return n + " " + unit + (n === 1 ? "" : "s") + " ago";
-    }
-  }
-  return "just now";
-}
-
-// "Last edited by NAME, X ago" from the latest commit touching hub.md.
-// Any failure (offline, rate limited, odd data) leaves the line hidden.
-async function loadLastEdit() {
-  try {
-    const res = await fetch("https://api.github.com/repos/" + REPO + "/commits?path=hub.md&per_page=1", { cache: "no-cache" });
-    if (!res.ok) return;
-    const [latest] = await res.json();
-    if (!latest) return;
-    const name = latest.commit.author.name || (latest.author && latest.author.login);
-    const when = new Date(latest.commit.committer.date);
-    if (!name || isNaN(when)) return;
-    const line = document.getElementById("edited");
-    line.textContent = "Last edited by " + name + ", " + timeAgo(when);
-    line.title = when.toLocaleString();
-    line.hidden = false;
-  } catch (err) {
-    // stay hidden
-  }
-}
-
-loadHub();
-loadLastEdit();
 </script>
 </body>
 </html>
