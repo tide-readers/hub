@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Tide Readers Hub</title>
+<style>
+:root {
+  --bg: #16171B;
+  --card: #2A2B30;
+  --line: #3A3B40;
+  --amber: #E0A13A;
+  --text: #ECECEC;
+  --muted: #8A8B90;
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 792px; margin: 0 auto; padding: 32px 16px 72px; }
+
+/* top bar */
+.top { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 20px; margin-bottom: 48px; }
+.meta { margin: 0; color: var(--muted); font-size: .9rem; }
+.edit {
+  margin-left: auto;
+  display: inline-block;
+  background: var(--amber);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: .95rem;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.edit:hover { filter: brightness(1.08); }
+.edit:focus-visible, a:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+
+/* rendered markdown */
+#content { overflow-wrap: break-word; }
+#content > h1:first-child { margin-top: 0; }
+h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.2; letter-spacing: -.01em; margin: 1.6em 0 .5em; }
+h1 { font-size: clamp(2rem, 6vw, 2.75rem); font-weight: 800; letter-spacing: -.025em; margin-bottom: .4em; }
+h2 { font-size: 1.45rem; }
+h3 { font-size: 1.15rem; }
+h4, h5, h6 { font-size: 1rem; }
+p, ul, ol, blockquote, pre, .table-wrap { margin: 0 0 1em; }
+ul, ol { padding-left: 1.4em; }
+li + li { margin-top: .3em; }
+li > ul, li > ol { margin: .3em 0 0; }
+li::marker { color: var(--muted); }
+a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+strong { font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
+img { max-width: 100%; height: auto; border-radius: 8px; }
+blockquote { padding: .1em 0 .1em 1em; border-left: 3px solid var(--amber); }
+code { font-family: var(--mono); font-size: .88em; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: .1em .35em; }
+pre { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; overflow-x: auto; }
+pre code { background: none; border: 0; padding: 0; font-size: .88rem; }
+
+/* task lists */
+li:has(> input[type="checkbox"]),
+li:has(> p:first-child > input[type="checkbox"]:first-child) { list-style: none; margin-left: -1.4em; }
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+  width: 1.05em;
+  height: 1.05em;
+  margin: 0 .55em 0 0;
+  vertical-align: -.17em;
+  border: 2px solid var(--amber);
+  border-radius: 4px;
+  background: transparent;
+  opacity: 1;
+}
+input[type="checkbox"]:checked {
+  background: var(--amber) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%2316171B' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat;
+}
+
+/* tables */
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 700; font-size: .85rem; }
+tr:last-child td { border-bottom: 0; }
+th:first-child, td:first-child { padding-left: 0; }
+th:last-child, td:last-child { padding-right: 0; }
+
+/* each ## section becomes a card */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 28px; margin-top: 20px; }
+.card > h2:first-child { margin-top: 0; }
+.card > :last-child { margin-bottom: 0; }
+.lead { color: var(--muted); }
+
+.foot { margin-top: 48px; color: var(--muted); font-size: .9rem; }
+.foot a { color: var(--muted); }
+
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .wrap { padding-top: 20px; }
+  .top { margin-bottom: 32px; }
+  .card { padding: 20px 18px; border-radius: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <p class="meta" id="edited" hidden></p>
+    <a class="edit" href="https://github.com/tide-readers/hub/edit/main/hub.md">Edit this page</a>
+  </header>
+
+  <main id="content">
+    <p class="lead">Loading…</p>
+    <noscript><p>This page needs JavaScript to show the hub.</p></noscript>
+  </main>
+
+  <footer class="foot">
+    <a href="https://github.com/tide-readers/hub#readme">How to edit</a> ·
+    <a href="https://github.com/tide-readers/hub/commits/main/hub.md">Past edits</a>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/18.1.1/lib/marked.umd.min.js" integrity="sha512-TR+1uszv8n9bFfC+4wouvHv2Na21prfppUEcxR62hf7+e4AZpz1l726rHEk5Zhpg6uJWUJ+LhN+hVqL99YCZqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.4.17/purify.min.js" integrity="sha512-2wT0W6vojz3cJuLoa/DxrPVQRinkfRjFWMWIDK4NghTqObEhpem1nEkeK0d9ZE+/hyvfMNuJZlfxM4LsRgeoSA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+const REPO = "tide-readers/hub";
+const content = document.getElementById("content");
+
+// Wrap everything from one h2 up to the next in a card.
+function makeCards(root) {
+  let card = null;
+  for (const node of [...root.childNodes]) {
+    if (node.nodeName === "H2") {
+      card = document.createElement("section");
+      card.className = "card";
+      root.insertBefore(card, node);
+    }
+    if (card) card.appendChild(node);
+  }
+}
+
+// Let wide tables scroll sideways instead of the whole page.
+function wrapTables(root) {
+  for (const table of root.querySelectorAll("table")) {
+    const wrap = document.createElement("div");
+    wrap.className = "table-wrap";
+    table.before(wrap);
+    wrap.appendChild(table);
+  }
+}
+
+async function loadHub() {
+  try {
+    const res = await fetch("hub.md", { cache: "no-cache" });
+    if (!res.ok) throw new Error("hub.md returned " + res.status);
+    const md = await res.text();
+    content.innerHTML = DOMPurify.sanitize(marked.parse(md, { gfm: true }));
+    wrapTables(content);
+    makeCards(content);
+    const h1 = content.querySelector("h1");
+    if (h1 && h1.textContent.trim()) document.title = h1.textContent.trim();
+  } catch (err) {
+    console.error(err);
+    content.innerHTML =
+      '<section class="card"><h2>The page didn’t load</h2>' +
+      "<p>Something went wrong while fetching the hub. Check your connection and refresh in a minute.</p>" +
+      "<p>If it keeps happening, post in Slack so we can take a look.</p></section>";
+  }
+}
+
+function timeAgo(date) {
+  const seconds = Math.round((Date.now() - date.getTime()) / 1000);
+  const units = [["year", 31536000], ["month", 2592000], ["week", 604800], ["day", 86400], ["hour", 3600], ["minute", 60]];
+  for (const [unit, size] of units) {
+    if (seconds >= size) {
+      const n = Math.floor(seconds / size);
+      return n + " " + unit + (n === 1 ? "" : "s") + " ago";
+    }
+  }
+  return "just now";
+}
+
+// "Last edited by NAME, X ago" from the latest commit touching hub.md.
+// Any failure (offline, rate limited, odd data) leaves the line hidden.
+async function loadLastEdit() {
+  try {
+    const res = await fetch("https://api.github.com/repos/" + REPO + "/commits?path=hub.md&per_page=1");
+    if (!res.ok) return;
+    const [latest] = await res.json();
+    if (!latest) return;
+    const name = latest.commit.author.name || (latest.author && latest.author.login);
+    const when = new Date(latest.commit.committer.date);
+    if (!name || isNaN(when)) return;
+    const line = document.getElementById("edited");
+    line.textContent = "Last edited by " + name + ", " + timeAgo(when);
+    line.title = when.toLocaleString();
+    line.hidden = false;
+  } catch (err) {
+    // stay hidden
+  }
+}
+
+loadHub();
+loadLastEdit();
+</script>
+</body>
+</html>
