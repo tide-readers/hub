@@ -35,6 +35,7 @@ Add each decision with the date and a short reason, so we remember why.
 ## Next steps
 
 - [x] Set up this page
+- [x] Put the page live at hub.tidereaders.org
 - [ ] Everyone: accept the GitHub invite and add your name under Who does what
 - [ ] Vote on the level, then the audience
 - [ ] Pick 2–3 focus areas that fit the vote
