@@ -34,6 +34,7 @@ How might our relationship with the ocean change by 2040, and what could that me
 
 Source: Brief deck (OceanX, Mar 2026)
 
+
 ### What success looks like
 
 A future world brought to life through artefacts or prototypes the team can test and get feedback on.
@@ -92,6 +93,17 @@ Footage reaches millions through partner series; OceanX’s own channels are muc
 - No OceanXplorers viewership or impact data found
 
 Source: Combined synthesis
+
+### Testing of the Ocean
+
+This is a test line to ensure edits can be made to this log.
+
+- This repo can be edited
+- This can be uploaded and seen by others.
+
+Source: Never Never Land
+Link: https://example.com
+Added by: Mike
 
 ## Ship and tools
 
