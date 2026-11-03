@@ -199,7 +199,7 @@ function timeAgo(date) {
 // Any failure (offline, rate limited, odd data) leaves the line hidden.
 async function loadLastEdit() {
   try {
-    const res = await fetch("https://api.github.com/repos/" + REPO + "/commits?path=hub.md&per_page=1");
+    const res = await fetch("https://api.github.com/repos/" + REPO + "/commits?path=hub.md&per_page=1", { cache: "no-cache" });
     if (!res.ok) return;
     const [latest] = await res.json();
     if (!latest) return;
